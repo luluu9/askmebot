@@ -20,7 +20,7 @@ ask_command = "!askme"
 class Questions:
     def __init__(self):
         try:
-            with open('data.json', 'r') as f:
+            with open('data.json', 'r', encoding="utf-8") as f:
                 data = json.load(f)
         except Exception as error:
             print("Can't open data.json file")
