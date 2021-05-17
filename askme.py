@@ -31,8 +31,11 @@ class Questions:
         self.free = list(self.questions.keys()) # id of questions that were not used 
 
     def get_question(self, topic=None):
+        if len(self.free) == 0:
+            print("No more questions! Resetting queue")
+            self.free = list(self.questions.keys())
         if topic:
-            if topic in self.topics: # można tu zrobić while randomQuestion not in self.free żeby być pewnym że się nie powtórzyło, sprawdzić by należało tylko żeby nie wpadł w infinity loopa
+            if topic in self.topics:
                 randomQuestionId = random.choice(self.topics[topic])
                 try:
                     self.free.remove(randomQuestionId)
@@ -45,11 +48,7 @@ class Questions:
         else:
             randomQuestionId = random.choice(self.free)
             self.free.remove(randomQuestionId)
-            return self.questions[randomQuestionId]
-
-        if len(self.free) == 0:
-            print("No more questions! Resetting queue")
-            self.free = list(self.questions.keys())
+            return self.questions[randomQuestionId])
         
 
 
