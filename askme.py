@@ -47,8 +47,8 @@ class Questions:
                     pass
                 return self.questions[randomQuestionId]
             else:
-                print('No topic in the database:', topic)
-                return "No " + topic + " in the database!"
+                print('No topic in the topic database:', topic)
+                return "No " + topic + " in the topic database!"
         else:
             randomQuestionId = random.choice(self.free)
             self.free.remove(randomQuestionId)
@@ -71,6 +71,14 @@ class Questions:
             self.update_data()
             return "Added question with id " + str(question_id)
         return "No question given!"
+    
+    def get_questions(self, page, amount_on_page=10):
+        start = (page-1)*amount_on_page
+        stop = page*amount_on_page
+        questions_list = self.questions[start:stop]
+        if len(questions_list) == 0:
+            return ["No questions on this page!"]
+        return questions_list
                 
 
 @client.event
@@ -93,6 +101,15 @@ async def on_message(message):
             question_id = int(context.split("id")[-1].strip())
             result = q.get_question(question_id=question_id)
             await message.channel.send(result)
+        elif context.startswith("list"): # get list of questions
+            amount = 10
+            page = int(context.split("list")[-1].strip())
+            result = q.get_questions(page, amount)
+            questions_list = ""
+            start = (page-1)*amount+1
+            for i, question in enumerate(result, start=start):
+                questions_list += f"{i}. {question}\n"
+            await message.channel.send(questions_list)
         else: # return question (by topic if given)
             topic = message.content.split(ask_command)[-1].strip()
             question = q.get_question(topic)
@@ -104,7 +121,7 @@ client.run(os.environ['TOKEN'])
 
 # TODO:
 # - add questions by chat ✔
-# - handle questions ids better
+# - handle questions ids better ✔
+# - list questions ✔
 # - manage topics
-# - list questions
 # - handle free questions in better way (?) // what about theme questions
