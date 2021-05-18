@@ -30,10 +30,13 @@ class Questions:
         self.topics = data['topics']
         self.free = list(self.questions.keys()) # id of questions that were not used 
 
-    def get_question(self, topic=None):
+    def get_question(self, topic=None, question_id=None):
         if len(self.free) == 0:
             print("No more questions! Resetting queue")
             self.free = list(self.questions.keys())
+        if question_id:
+            if question_id in self.questions:
+                return self.questions[question_id]
         if topic:
             if topic in self.topics:
                 randomQuestionId = random.choice(self.topics[topic])
@@ -67,7 +70,7 @@ class Questions:
             if topic in self.topics:
                 self.topics[topic].append(new_q_id)
             self.update_data()
-            return "Added question"
+            return "Added question " + new_q_id
         return "No question given!"
                 
 
@@ -83,11 +86,15 @@ async def on_message(message):
     
     if message.content.startswith(ask_command):
         context = message.content.split(ask_command)[1].strip()
-        if context.startswith("add"):
+        if context.startswith("add"): # add question
             question = context.split("add")[-1].strip()
             result = q.add_question(question)
             await message.channel.send(result)
-        else:
+        elif context.startswith("id"): # select question by id
+            question_id = context.split("id")[-1].strip()
+            result = q.get_question(question_id=question_id)
+            await message.channel.send(result)
+        else: # return question (by topic if given)
             topic = message.content.split(ask_command)[-1].strip()
             question = q.get_question(topic)
             await message.channel.send(question)
