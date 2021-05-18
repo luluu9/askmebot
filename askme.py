@@ -2,6 +2,7 @@ import discord
 import os 
 import json
 import random
+from math import ceil
 
 client = discord.Client()
 
@@ -79,6 +80,9 @@ class Questions:
         if len(questions_list) == 0:
             return ["No questions on this page!"]
         return questions_list
+    
+    def get_questions_amount(self):
+        return len(self.questions)
                 
 
 @client.event
@@ -117,13 +121,17 @@ async def select_by_id(message, context):
 
 async def list_questions(message, context):
     amount = 10
-    page = int(context.split("list")[-1].strip())
-    result = q.get_questions(page, amount)
-    questions_list = ""
-    start = (page-1)*amount+1
-    for i, question in enumerate(result, start=start):
-        questions_list += f"{i}. {question}\n"
-    await message.channel.send(questions_list)
+    page = context.split("list")[-1].strip()
+    if page:
+        page = int(page)
+        result = q.get_questions(page, amount)
+        questions_list = ""
+        start = (page-1)*amount+1
+        for i, question in enumerate(result, start=start):
+            questions_list += f"{i}. {question}\n"
+        await message.channel.send(questions_list)
+    else:
+        await message.channel.send(f"Choose page from 1 to {ceil(q.get_questions_amount()/amount)}")
 
 
 async def return_question(message, context):
