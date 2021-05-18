@@ -28,18 +28,19 @@ class Questions:
 
         self.questions = data['questions']
         self.topics = data['topics']
-        self.free = list(self.questions.keys()) # id of questions that were not used 
+        self.free = [i for i in range(len(self.questions))] # id of questions that were not used 
 
     def get_question(self, topic=None, question_id=None):
         if len(self.free) == 0:
-            print("No more questions! Resetting queue")
-            self.free = list(self.questions.keys())
-        if question_id:
-            if question_id in self.questions:
-                return self.questions[question_id]
+            print("No more questions! Resetting the queue")
+            self.free = [i for i in range(len(self.questions))]
+        if question_id != None:
+            if 1 <= question_id <= len(self.questions):
+                return self.questions[question_id - 1]
+            return f"Invalid id, range from 1 to {len(self.questions)}"
         if topic:
             if topic in self.topics:
-                randomQuestionId = random.choice(self.topics[topic])
+                randomQuestionId = int(random.choice(self.topics[topic]))
                 try:
                     self.free.remove(randomQuestionId)
                 except ValueError: # it can happen if someone firstly pull question that is in topic list 
@@ -63,14 +64,12 @@ class Questions:
 
     def add_question(self, question, topic=None):
         if question:
-            # it can be better if we change questions from Dict to List
-            # then it will be able to index questions on the fly 
-            new_q_id = str(max(map(int, self.questions.keys())) + 1)
-            self.questions[new_q_id] = question
+            self.questions.append(question)
+            question_id = len(self.questions)
             if topic in self.topics:
-                self.topics[topic].append(new_q_id)
+                self.topics[topic].append(question_id)
             self.update_data()
-            return "Added question " + new_q_id
+            return "Added question with id " + str(question_id)
         return "No question given!"
                 
 
@@ -91,7 +90,7 @@ async def on_message(message):
             result = q.add_question(question)
             await message.channel.send(result)
         elif context.startswith("id"): # select question by id
-            question_id = context.split("id")[-1].strip()
+            question_id = int(context.split("id")[-1].strip())
             result = q.get_question(question_id=question_id)
             await message.channel.send(result)
         else: # return question (by topic if given)
@@ -105,6 +104,7 @@ client.run(os.environ['TOKEN'])
 
 # TODO:
 # - add questions by chat ✔
+# - handle questions ids better
 # - manage topics
 # - list questions
 # - handle free questions in better way (?) // what about theme questions

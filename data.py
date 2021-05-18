@@ -14,8 +14,7 @@ with open("questions.txt", encoding="utf-8") as f:
             continue
         questions.append(line.strip())
 
-for ind, question in enumerate(questions, start=1):
-    data['questions'][ind] = question
+data['questions'] = questions
 
 with open("data.json", "w", encoding="utf-8") as f:
     json.dump(data, f, indent=2, ensure_ascii=False)
