@@ -29,39 +29,39 @@ class Questions:
 
         self.questions = data['questions']
         self.topics = data['topics']
-        self.free = [i for i in range(len(self.questions))] # id of questions that were not used 
+        self.free = [i for i in range(len(self.questions))]  # id of questions that were not used
 
     def get_question(self, topic=None, question_id=None):
         if len(self.free) == 0:
             print("No more questions! Resetting the queue")
             self.free = [i for i in range(len(self.questions))]
-        if question_id != None:
+        if question_id is not None:
             if 1 <= question_id <= len(self.questions):
                 return self.questions[question_id - 1]
             return f"Invalid id, range from 1 to {len(self.questions)}"
         if topic:
             if topic in self.topics:
-                randomQuestionId = int(random.choice(self.topics[topic]))
+                random_question_id = int(random.choice(self.topics[topic]))
                 try:
-                    self.free.remove(randomQuestionId)
-                except ValueError: # it can happen if someone firstly pull question that is in topic list 
+                    self.free.remove(random_question_id)
+                except ValueError:  # it can happen if someone firstly pull question that is in topic list
                     pass
-                return self.questions[randomQuestionId]
+                return self.questions[random_question_id]
             else:
                 print('No topic in the topic database:', topic)
                 return "No " + topic + " in the topic database!"
         else:
-            randomQuestionId = random.choice(self.free)
-            self.free.remove(randomQuestionId)
-            return self.questions[randomQuestionId]
+            random_question_id = random.choice(self.free)
+            self.free.remove(random_question_id)
+            return self.questions[random_question_id]
     
     def update_data(self):
-        self.data = {
+        data = {
             "questions": self.questions,
             "topics": self.topics
         }
         with open("data.json", "w", encoding="utf-8") as f:
-            json.dump(self.data, f, indent=2, ensure_ascii=False)
+            json.dump(data, f, indent=2, ensure_ascii=False)
 
     def add_question(self, question, topic=None):
         if question:
@@ -97,13 +97,13 @@ async def on_message(message):
     
     if message.content.startswith(ask_command):
         context = message.content.split(ask_command)[1].strip()
-        if context.startswith("add"): # add question
+        if context.startswith("add"):  # add question
             await add_question(message, context)
-        elif context.startswith("id"): # select question by id
+        elif context.startswith("id"):  # select question by id
             await select_by_id(message, context)
-        elif context.startswith("list"): # get list of questions
+        elif context.startswith("list"):  # get list of questions
             await list_questions(message, context)
-        else: # return question (by topic if given)
+        else:  # return question (by topic if given)
             await return_question(message, context)
 
 
