@@ -48,9 +48,28 @@ class Questions:
         else:
             randomQuestionId = random.choice(self.free)
             self.free.remove(randomQuestionId)
-            return self.questions[randomQuestionId])
-        
+            return self.questions[randomQuestionId]
+    
+    def update_data(self):
+        self.data = {
+            "questions": self.questions,
+            "topics": self.topics
+        }
+        with open("data.json", "w", encoding="utf-8") as f:
+            json.dump(self.data, f, indent=2, ensure_ascii=False)
 
+    def add_question(self, question, topic=None):
+        if question:
+            # it can be better if we change questions from Dict to List
+            # then it will be able to index questions on the fly 
+            new_q_id = str(max(map(int, self.questions.keys())) + 1)
+            self.questions[new_q_id] = question
+            if topic in self.topics:
+                self.topics[topic].append(new_q_id)
+            self.update_data()
+            return "Added question"
+        return "No question given!"
+                
 
 @client.event
 async def on_ready():
@@ -63,9 +82,22 @@ async def on_message(message):
         return
     
     if message.content.startswith(ask_command):
-        topic = message.content.split(ask_command)[-1].strip()
-        question = q.get_question(topic)
-        await message.channel.send(question)
+        context = message.content.split(ask_command)[1].strip()
+        if context.startswith("add"):
+            question = context.split("add")[-1].strip()
+            result = q.add_question(question)
+            await message.channel.send(result)
+        else:
+            topic = message.content.split(ask_command)[-1].strip()
+            question = q.get_question(topic)
+            await message.channel.send(question)
 
 q = Questions()
 client.run(os.environ['TOKEN'])
+
+
+# TODO:
+# - add questions by chat ✔
+# - manage topics
+# - list questions
+# - handle free questions in better way (?) // what about theme questions
