@@ -6,7 +6,7 @@ import random
 client = discord.Client()
 
 # questions:
-# id1: question; id2:...
+# [question1, question2...]
 
 # topics:
 # topic: [id1, id2]...
@@ -94,26 +94,43 @@ async def on_message(message):
     if message.content.startswith(ask_command):
         context = message.content.split(ask_command)[1].strip()
         if context.startswith("add"): # add question
-            question = context.split("add")[-1].strip()
-            result = q.add_question(question)
-            await message.channel.send(result)
+            await add_question(message, context)
         elif context.startswith("id"): # select question by id
-            question_id = int(context.split("id")[-1].strip())
-            result = q.get_question(question_id=question_id)
-            await message.channel.send(result)
+            await select_by_id(message, context)
         elif context.startswith("list"): # get list of questions
-            amount = 10
-            page = int(context.split("list")[-1].strip())
-            result = q.get_questions(page, amount)
-            questions_list = ""
-            start = (page-1)*amount+1
-            for i, question in enumerate(result, start=start):
-                questions_list += f"{i}. {question}\n"
-            await message.channel.send(questions_list)
+            await list_questions(message, context)
         else: # return question (by topic if given)
-            topic = message.content.split(ask_command)[-1].strip()
-            question = q.get_question(topic)
-            await message.channel.send(question)
+            await return_question(message, context)
+
+
+async def add_question(message, context):
+    question = context.split("add")[-1].strip()
+    result = q.add_question(question)
+    await message.channel.send(result)
+
+
+async def select_by_id(message, context):
+    question_id = int(context.split("id")[-1].strip())
+    result = q.get_question(question_id=question_id)
+    await message.channel.send(result)
+
+
+async def list_questions(message, context):
+    amount = 10
+    page = int(context.split("list")[-1].strip())
+    result = q.get_questions(page, amount)
+    questions_list = ""
+    start = (page-1)*amount+1
+    for i, question in enumerate(result, start=start):
+        questions_list += f"{i}. {question}\n"
+    await message.channel.send(questions_list)
+
+
+async def return_question(message, context):
+    topic = message.content.split(ask_command)[-1].strip()
+    question = q.get_question(topic)
+    await message.channel.send(question)
+
 
 q = Questions()
 client.run(os.environ['TOKEN'])
