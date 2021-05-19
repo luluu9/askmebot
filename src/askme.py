@@ -15,21 +15,26 @@ client = discord.Client()
 # already_asked:
 # [id1, id2]
 
+directory = os.path.dirname(__file__)
+
 ask_command = "!askme"
+datafile = directory + "\\data.json"
 
 
 class Questions:
-    def __init__(self):
-        try:
-            with open('data.json', 'r', encoding="utf-8") as f:
-                data = json.load(f)
-        except Exception as error:
-            print("Can't open data.json file")
-            raise error
-
+    def __init__(self, datafile):
+        data = self.load_data(datafile)
         self.questions = data['questions']
         self.topics = data['topics']
         self.free = [i for i in range(len(self.questions))]  # id of questions that were not used
+
+    def load_data(self, datafile):
+        try:
+            with open(datafile, 'r', encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as error:
+            print("Can't open data.json file")
+            raise error
 
     def get_question(self, topic=None, question_id=None):
         if len(self.free) == 0:
@@ -140,8 +145,9 @@ async def return_question(message, context):
     await message.channel.send(question)
 
 
-q = Questions()
-client.run(os.environ['TOKEN'])
+if __name__ == "__main__":
+    q = Questions(datafile)
+    client.run(os.environ['TOKEN'])
 
 
 # TODO:
