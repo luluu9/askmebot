@@ -1,10 +1,13 @@
-### Bot description
+## Bot description
 This bot is used to socialize with friends on Discord servers. Ask yourselves questions and have a fun!
 
 #### Features
 - ask a random question ✔
+- add/remove questions using a Discord chat ✔
+- list pages of questions ✔
 - ~~choose a theme of the questions~~ ❌
-- ~~feature to add questions using a Discord chat~~ ❌
+- ~~add multiple questions by chat at once~~ ❌
+- ~~manage questions' topics by chat~~ ❌
 
 If you have some good ideas, write to me!
 
@@ -33,3 +36,6 @@ Then, run the *data.py* file to generate a *data.json* file that contains inform
 After that, all you have to do is to run the *askme.py* script and type *!askme* command on Discord chat. 
 
 You can change *!askme* to whatever command you want. Just edit *ask_command* variable in *askme.py* file.
+
+#### Known bugs
+- if a keyword *add* is in add question message, the content can be eaten (if someone types !askme add added) it's added as "ed") 
