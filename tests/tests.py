@@ -1,5 +1,6 @@
 import unittest
 import sys, os
+import json
 
 
 class TestQuestions(unittest.TestCase):
@@ -18,10 +19,10 @@ class TestQuestions(unittest.TestCase):
         self.assertIn(q, self.assertQuestions)
 
     def test_no_free_questions(self):
+        # it's good if prints "No more questions!"
         for i in range(len(self.assertQuestions) + 1):
             q =  self.testQuestions.get_question()
             self.assertIn(q, self.assertQuestions)
-        # it's good if prints "No more questions!"
     
     def test_get_question_by_id(self):
         q =  self.testQuestions.get_question(question_id=1)
@@ -38,8 +39,23 @@ class TestQuestions(unittest.TestCase):
         r = self.testQuestions.add_question("Added question")
         self.assertEqual(r, "Added question with id " + str(len(self.assertQuestions)+1))
     
+    def test_remove_question(self):
+        self.testQuestions.questions.append("To delete")
+        current_questions = self.testQuestions.questions
+        id_to_remove = len(current_questions)
+        r = self.testQuestions.remove_question(id_to_remove)
+        self.assertEqual(r, "Successfully removed question " + str(id_to_remove))
+        self.assertEqual(current_questions, self.assertQuestions)
+        self.assertNotIn("To delete", self.testQuestions.questions)
+        self.assertNotIn(id_to_remove, self.testQuestions.free)
+
+    def test_remove_question_bad_id(self):
+        bad_id = len(self.testQuestions.questions) + 1
+        r = self.testQuestions.remove_question(bad_id)
+        self.assertEqual(r, "Bad id to remove: " + str(bad_id))
+    
     # TODO
-    # def test_remove_question(self):
+    # def test_remove_question_check_topics(self):
 
     def test_get_questions(self):
         r = self.testQuestions.get_questions(1)
@@ -57,7 +73,20 @@ class TestQuestions(unittest.TestCase):
         r = self.testQuestions.get_questions_amount()
         self.assertEqual(r, len(self.assertQuestions))
 
+
+def clear_test_data():
+    questions = ["First question", "Second question", "Last question"]
+    topics = {}
+    data = {
+        "questions": questions,
+        "topics": topics
+    }
+    with open(myPath + "\\" + "test_data.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+
 if __name__ == '__main__':
     myPath = os.path.dirname(os.path.abspath(__file__))
     sys.path.append(myPath + '\\..\\src')  # required for using from askmebot/ directory
-    unittest.main()
+    unittest.main(exit=False)
+    clear_test_data()

@@ -79,6 +79,27 @@ class Questions:
             return "Added question with id " + str(question_id)
         return "No question given!"
     
+    def remove_question(self, remove_id):
+        if 0 < remove_id and remove_id <= len(self.questions):
+            self.questions.pop(remove_id-1)
+            # indexes are rearranged so clean up dirt
+            index_to_del = len(self.questions) + 1
+            if index_to_del in self.free:
+                self.free.remove(index_to_del)
+            for topic, questions_ids in self.topics.items():
+                if remove_id in questions_ids:
+                    questions_ids.remove(remove_id)
+                # deincrement each question with id above id to remove
+                for index, question_id in enumerate(questions_ids):
+                    if question_id > remove_id:
+                        self.topics[topic][index] -= 1
+            self.update_data()
+            return "Successfully removed question " + str(remove_id)
+        else:
+            return "Bad id to remove: " + str(remove_id)
+
+
+
     def get_questions(self, page, amount_on_page=10):
         start = (page-1)*amount_on_page
         stop = page*amount_on_page
@@ -105,6 +126,8 @@ async def on_message(message):
         context = message.content.split(ask_command)[1].strip()
         if context.startswith("add"):  # add question
             await add_question(message, context)
+        elif context.startswith("remove"):
+            await remove_question(message, context)
         elif context.startswith("id"):  # select question by id
             await select_by_id(message, context)
         elif context.startswith("list"):  # get list of questions
@@ -116,6 +139,12 @@ async def on_message(message):
 async def add_question(message, context):
     question = context.split("add")[-1].strip()
     result = q.add_question(question)
+    await message.channel.send(result)
+
+
+async def remove_question(message, context):
+    question_id = int(context.split("remove")[-1].strip())
+    result = q.remove_question(question_id)
     await message.channel.send(result)
 
 
@@ -155,5 +184,11 @@ if __name__ == "__main__":
 # - add questions by chat ✔
 # - handle questions ids better ✔
 # - list questions ✔
+# - remove questions by chat ✔
 # - manage topics
 # - handle free questions in better way (?) // what about theme questions
+# - add multiple questions by chat at once
+
+
+# KNOWN BUGS:
+# - if keyword (add/list...) in add question message, content is eaten (if someone types !askme add added) in db it figures as "ed") 
