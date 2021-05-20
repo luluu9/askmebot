@@ -24,6 +24,7 @@ datafile = directory + "\\data.json"
 class Questions:
     def __init__(self, datafile):
         data = self.load_data(datafile)
+        self.datafile = datafile
         self.questions = data['questions']
         self.topics = data['topics']
         self.free = [i for i in range(len(self.questions))]  # id of questions that were not used
@@ -65,7 +66,7 @@ class Questions:
             "questions": self.questions,
             "topics": self.topics
         }
-        with open("data.json", "w", encoding="utf-8") as f:
+        with open(self.datafile, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
     def add_question(self, question, topic=None):
