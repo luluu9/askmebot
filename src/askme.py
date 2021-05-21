@@ -47,7 +47,7 @@ class Questions:
             return f"Invalid id, range from 1 to {len(self.questions)}"
         if topic:
             if topic in self.topics:
-                random_question_id = int(random.choice(self.topics[topic]))
+                random_question_id = int(random.choice(self.topics[topic])) - 1
                 try:
                     self.free.remove(random_question_id)
                 except ValueError:  # it can happen if someone firstly pull question that is in topic list
@@ -98,8 +98,6 @@ class Questions:
         else:
             return "Bad id to remove: " + str(remove_id)
 
-
-
     def get_questions(self, page, amount_on_page=10):
         start = (page-1)*amount_on_page
         stop = page*amount_on_page
@@ -110,6 +108,11 @@ class Questions:
     
     def get_questions_amount(self):
         return len(self.questions)
+    
+    def get_topic_list(self):
+        return [topic for topic in self.topics]
+    
+    
                 
 
 @client.event
@@ -132,6 +135,8 @@ async def on_message(message):
             await select_by_id(message, context)
         elif context.startswith("list"):  # get list of questions
             await list_questions(message, context)
+        elif context.startswith("topics"):
+            await print_topics(message, context)
         else:  # return question (by topic if given)
             await return_question(message, context)
 
@@ -175,6 +180,12 @@ async def return_question(message, context):
     await message.channel.send(question)
 
 
+async def print_topics(message, context):
+    topics_list = q.get_topic_list()
+    topics_str = "\n".join([str(i) + ". " + topic for i, topic in enumerate(topics_list, start=1)])
+    await message.channel.send(topics_str)
+
+
 if __name__ == "__main__":
     q = Questions(datafile)
     client.run(os.environ['TOKEN'])
@@ -191,4 +202,4 @@ if __name__ == "__main__":
 
 
 # KNOWN BUGS:
-# - if keyword (add/list...) in add question message, content is eaten (if someone types !askme add added) in db it figures as "ed") 
+# - if keyword add in add question message, content is eaten (if someone types !askme add added) in db it figures as "ed") 
