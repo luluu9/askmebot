@@ -111,10 +111,14 @@ class Questions:
     
     def get_topic_list(self):
         return [topic for topic in self.topics]
-    
-    
-                
 
+    def get_topic_questions(self, topic):
+        if topic in self.topics:
+            return [self.questions[q] for q in self.topics[topic]]
+        else:
+            return ["Topic not in the database!"]
+        
+    
 @client.event
 async def on_ready():
     print('Logged in as {0.user}'.format(client))
@@ -137,6 +141,8 @@ async def on_message(message):
             await list_questions(message, context)
         elif context.startswith("topics"):
             await print_topics(message, context)
+        elif context.startswith("topic"):
+            await print_topic(message, context)
         else:  # return question (by topic if given)
             await return_question(message, context)
 
@@ -182,8 +188,15 @@ async def return_question(message, context):
 
 async def print_topics(message, context):
     topics_list = q.get_topic_list()
-    topics_str = "\n".join([str(i) + ". " + topic for i, topic in enumerate(topics_list, start=1)])
+    topics_str = "\n".join(["- " + topic for topic in topics_list])
     await message.channel.send(topics_str)
+
+
+async def print_topic(message, context):
+    topic = context.split("topic")[-1].strip()
+    topic_questions = q.get_topic_questions(topic) 
+    questions_str = "\n".join([str(i) + ". " + q for i, q in enumerate(topic_questions, start=1)])
+    await message.channel.send(questions_str)
 
 
 if __name__ == "__main__":
