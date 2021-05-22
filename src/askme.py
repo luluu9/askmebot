@@ -123,6 +123,8 @@ class Questions:
         if topic in self.topics:
             if question_id in self.topics[topic]:
                 return "Question already in the topic list!"
+            if question_id < 1 or question_id > len(self.questions):
+                return f"Invalid question id, choose between 1 and {len(self.questions)}"
             self.topics[topic].append(question_id)
             self.update_data()
             return f"Question {question_id} set to the topic {topic}"
@@ -251,11 +253,12 @@ if __name__ == "__main__":
 # - list questions ✔
 # - remove questions by chat ✔
 # - manage topics ✔
+# - check indexes when setting question id to topic ✔
 # - ensure indexes is passed as int to topics variable ✔
 # - list questions by topic in one function (?)
 # - handle free questions in better way (?) // what about theme questions
 # - add multiple questions by chat at once
-# - check indexes when setting question id to topic
+
 
 
 
