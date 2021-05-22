@@ -128,6 +128,14 @@ class Questions:
             self.topics[topic] = [question_id]
             return f"Added topic {topic} and set {question_id} there"
 
+    def unset_topic(self, question_id, topic):
+        if topic in self.topics:
+            if question_id in self.topics[topic]:
+                self.topics[topic].remove(question_id)
+                return f"Question {question_id} removed from the topic {topic}"
+            return "Question not in the topic list!"
+        else:
+            return "Topic not in the database!"
     
 @client.event
 async def on_ready():
@@ -156,7 +164,7 @@ async def on_message(message):
         elif context.startswith("set"):
             await set_topic(message, context)
         elif context.startswith("unset"):
-            await set_topic(message, context)
+            await unset_topic(message, context)
         else:  # return question (by topic if given)
             await return_question(message, context)
 
@@ -220,6 +228,13 @@ async def set_topic(message, context):
     result = q.set_topic(question_id, topic)
     await message.channel.send(result)
 
+
+async def unset_topic(message, context):
+    args = context.split("set")[-1].split()
+    question_id = int(args[0])
+    topic = args[1]
+    result = q.unset_topic(question_id, topic)
+    await message.channel.send(result)
 
 if __name__ == "__main__":
     q = Questions(datafile)
