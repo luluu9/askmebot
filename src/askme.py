@@ -26,7 +26,7 @@ class Questions:
         data = self.load_data(datafile)
         self.datafile = datafile
         self.questions = data['questions']
-        self.topics = data['topics']
+        self.topics = {topic: list(map(int, indexes)) for topic, indexes in data['topics'].items()}
         self.free = [i for i in range(len(self.questions))]  # id of questions that were not used
 
     def load_data(self, datafile):
@@ -246,11 +246,13 @@ if __name__ == "__main__":
 # - handle questions ids better ✔
 # - list questions ✔
 # - remove questions by chat ✔
-# - manage topics =
+# - manage topics ✔
+# - ensure indexes is passed as int to topics variable ✔
 # - list questions by topic in one function (?)
 # - handle free questions in better way (?) // what about theme questions
 # - add multiple questions by chat at once
 # - check indexes when setting question id to topic
+
 
 
 # KNOWN BUGS:
