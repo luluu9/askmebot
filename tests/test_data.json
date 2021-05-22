@@ -4,5 +4,13 @@
     "Second question",
     "Last question"
   ],
-  "topics": {}
+  "topics": {
+    "first": [
+      1
+    ],
+    "others": [
+      2,
+      3
+    ]
+  }
 }
