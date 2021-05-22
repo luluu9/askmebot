@@ -88,7 +88,7 @@ class Questions:
                 self.free.remove(index_to_del)
             for topic, questions_ids in self.topics.items():
                 if remove_id in questions_ids:
-                    questions_ids.remove(remove_id)
+                    self.topics[topic].remove(remove_id)
                 # deincrement each question with id above id to remove
                 for index, question_id in enumerate(questions_ids):
                     if question_id > remove_id:
@@ -114,7 +114,7 @@ class Questions:
 
     def get_topic_questions(self, topic):
         if topic in self.topics:
-            return [self.questions[q] for q in self.topics[topic]]
+            return [self.questions[q-1] for q in self.topics[topic]]
         else:
             return ["Topic not in the database!"]
     
@@ -122,12 +122,12 @@ class Questions:
         if topic in self.topics:
             if question_id in self.topics[topic]:
                 return "Question already in the topic list!"
-            self.topics[topic].append(question_id - 1)
+            self.topics[topic].append(question_id)
             return f"Question {question_id} set to the topic {topic}"
         else:
             self.topics[topic] = [question_id]
             return f"Added topic {topic} and set {question_id} there"
-    
+
     
 @client.event
 async def on_ready():
@@ -154,6 +154,8 @@ async def on_message(message):
         elif context.startswith("topic"):
             await print_topic(message, context)
         elif context.startswith("set"):
+            await set_topic(message, context)
+        elif context.startswith("unset"):
             await set_topic(message, context)
         else:  # return question (by topic if given)
             await return_question(message, context)
@@ -230,6 +232,7 @@ if __name__ == "__main__":
 # - list questions ✔
 # - remove questions by chat ✔
 # - manage topics =
+# - list questions by topic in one function (?)
 # - handle free questions in better way (?) // what about theme questions
 # - add multiple questions by chat at once
 # - check indexes when setting question id to topic
