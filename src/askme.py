@@ -75,6 +75,7 @@ class Questions:
             question_id = len(self.questions)
             if topic in self.topics:
                 self.topics[topic].append(question_id)
+            self.free.append(question_id)
             self.update_data()
             return "Added question with id " + str(question_id)
         return "No question given!"
@@ -123,15 +124,18 @@ class Questions:
             if question_id in self.topics[topic]:
                 return "Question already in the topic list!"
             self.topics[topic].append(question_id)
+            self.update_data()
             return f"Question {question_id} set to the topic {topic}"
         else:
             self.topics[topic] = [question_id]
+            self.update_data()
             return f"Added topic {topic} and set {question_id} there"
 
     def unset_topic(self, question_id, topic):
         if topic in self.topics:
             if question_id in self.topics[topic]:
                 self.topics[topic].remove(question_id)
+                self.update_data()
                 return f"Question {question_id} removed from the topic {topic}"
             return "Question not in the topic list!"
         else:
