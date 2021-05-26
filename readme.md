@@ -5,9 +5,10 @@ This bot is used to socialize with friends on Discord servers. Ask yourselves qu
 - ask a random question ✔
 - add/remove questions using a Discord chat ✔
 - list pages of questions ✔
-- ~~choose a theme of the questions~~ ❌
+- choose a theme of the questions ✔
+- manage questions' topics by chat ✔
+- ~~handle many servers at once~~ ❌
 - ~~add multiple questions by chat at once~~ ❌
-- ~~manage questions' topics by chat~~ ❌
 
 If you have some good ideas, write to me!
 
@@ -34,8 +35,9 @@ Firstly, you need to generate a list of questions. In this repository you have i
 Then, run the *data.py* file to generate a *data.json* file that contains informations about questions.
 
 After that, all you have to do is to run the *askme.py* script and type *!askme* command on Discord chat. 
+Type *!askme help* to get a list about supported commands. 
 
 You can change *!askme* to whatever command you want. Just edit *ask_command* variable in *askme.py* file.
 
 #### Known bugs
-- X
+- Currently none

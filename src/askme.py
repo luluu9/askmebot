@@ -259,6 +259,7 @@ async def unset_topic(message, context):
 async def help(message, context):
     await message.channel.send(help_message)
 
+
 if __name__ == "__main__":
     q = Questions(datafile)
     client.run(os.environ['TOKEN'])
@@ -273,11 +274,11 @@ if __name__ == "__main__":
 # - add help ✔
 # - check indexes when setting question id to topic ✔
 # - ensure indexes is passed as int to topics variable ✔
+# - modify database to run simultaneously on many servers at once 
 # - list questions by topic in one function (?)
 # - handle free questions in better way (?) // what about theme questions
 # - add multiple questions by chat at once
 
 
-
 # KNOWN BUGS:
-# - if keyword add in add question message, content is eaten (if someone types !askme add added) in db it figures as "ed") 
+# - if keyword add in add question message, content is eaten (if someone types !askme add added) in db it figures as "ed") ✔
