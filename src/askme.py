@@ -92,7 +92,7 @@ class Questions:
             question_id = len(self.questions)
             if topic in self.topics:
                 self.topics[topic].append(question_id)
-            self.free.append(question_id)
+            self.free.append(question_id-1)
             self.update_data()
             return "Added question with id " + str(question_id)
         return "No question given!"
@@ -159,7 +159,8 @@ class Questions:
             return "Question not in the topic list!"
         else:
             return "Topic not in the database!"
-    
+
+
 @client.event
 async def on_ready():
     print('Logged in as {0.user}'.format(client))
