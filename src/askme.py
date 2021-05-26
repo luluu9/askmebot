@@ -20,6 +20,17 @@ directory = os.path.dirname(__file__)
 ask_command = "!askme"
 datafile = directory + "\\data.json"
 
+help_message = f"""
+- {ask_command}: asks random question
+- {ask_command}: [topic]: asks random question about topic
+- {ask_command}: add [question]: adds question to list
+- {ask_command}: list [page]: lists questions on page x
+- {ask_command}: topics: lists available topics
+- {ask_command}: topic [topic]: lists question about topic
+- {ask_command}: set [question_id] [topic]: sets question to topic
+- {ask_command}: unset [question_id] [topic]: unsets question from topic
+"""
+
 
 class Questions:
     def __init__(self, datafile):
@@ -171,6 +182,8 @@ async def on_message(message):
             await set_topic(message, context)
         elif context.startswith("unset"):
             await unset_topic(message, context)
+        elif context.startswith("help"):
+            await help(message, context)
         else:  # return question (by topic if given)
             await return_question(message, context)
 
@@ -242,6 +255,10 @@ async def unset_topic(message, context):
     result = q.unset_topic(question_id, topic)
     await message.channel.send(result)
 
+
+async def help(message, context):
+    await message.channel.send(help_message)
+
 if __name__ == "__main__":
     q = Questions(datafile)
     client.run(os.environ['TOKEN'])
@@ -253,12 +270,12 @@ if __name__ == "__main__":
 # - list questions ✔
 # - remove questions by chat ✔
 # - manage topics ✔
+# - add help ✔
 # - check indexes when setting question id to topic ✔
 # - ensure indexes is passed as int to topics variable ✔
 # - list questions by topic in one function (?)
 # - handle free questions in better way (?) // what about theme questions
 # - add multiple questions by chat at once
-
 
 
 
