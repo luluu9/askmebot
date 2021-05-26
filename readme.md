@@ -38,4 +38,4 @@ After that, all you have to do is to run the *askme.py* script and type *!askme*
 You can change *!askme* to whatever command you want. Just edit *ask_command* variable in *askme.py* file.
 
 #### Known bugs
-- if a keyword *add* is in add question message, the content can be eaten (if someone types !askme add added) it's added as "ed") 
+- X

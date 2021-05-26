@@ -189,7 +189,7 @@ async def on_message(message):
 
 
 async def add_question(message, context):
-    question = context.split("add")[-1].strip()
+    question = context.split("add", maxsplit=1)[-1].strip()
     result = q.add_question(question)
     await message.channel.send(result)
 
