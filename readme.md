@@ -26,13 +26,14 @@ To use this bot on your own follow instructions:
   - Terminal: `export TOKEN={your Discord Bot token}`
   - Powershell: not supported now
   - cmd: `set TOKEN={your Discord Bot token}`
-- generate a data.json file with questions and topics with `py data.py` (look *How to use* paragraph for more information)
+- [optionally] generate a data.json file with questions and topics with `py data.py` (look *How to use* paragraph for more information)
 - run bot by using `py askme.py`
 
 #### How to use
-Firstly, you need to generate a list of questions. In this repository you have included list of some Polish questions in the *questions.txt* file. Currently, you have to write down questions on your own to questions.txt file. I will be working on bringing some basic funny questions to the repository. 
+Firstly, you may want to generate a list of questions. In this repository you have included list of some Polish questions in the *questions.txt* file. Currently, you have to write down questions on your own to questions.txt file. I will be working on bringing some basic funny questions to the repository. 
+Then, run the *data.py* file to generate a *data.json* file that contains informations about questions. 
 
-Then, run the *data.py* file to generate a *data.json* file that contains informations about questions.
+You can also add questions by Discord chat by typing *!askme add [question]*.
 
 After that, all you have to do is to run the *askme.py* script and type *!askme* command on Discord chat. 
 Type *!askme help* to get a list about supported commands. 

@@ -34,10 +34,13 @@ help_message = f"""
 
 class Questions:
     def __init__(self, datafile):
-        data = self.load_data(datafile)
         self.datafile = datafile
-        self.questions = data['questions']
-        self.topics = {topic: list(map(int, indexes)) for topic, indexes in data['topics'].items()}
+        self.questions = []
+        self.topics = {}
+        data = self.load_data(datafile)
+        if data:
+            self.questions = data['questions']
+            self.topics = {topic: list(map(int, indexes)) for topic, indexes in data['topics'].items()}
         self.free = [i for i in range(len(self.questions))]  # id of questions that were not used
 
     def load_data(self, datafile):
@@ -45,8 +48,11 @@ class Questions:
             with open(datafile, 'r', encoding="utf-8") as f:
                 return json.load(f)
         except Exception as error:
-            print("Can't open data.json file")
-            raise error
+            if os.path.exists(datafile):
+                print("Can't open data.json file")
+                raise error
+            else:
+                return None
 
     def get_question(self, topic=None, question_id=None):
         if len(self.free) == 0:
